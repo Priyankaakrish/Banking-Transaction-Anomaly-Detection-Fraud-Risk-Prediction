@@ -203,6 +203,36 @@ time-series features it can interpolate across the time boundary.
 `scale_pos_weight` reweights the loss without fabricating data.
 
 
+## Reference-data join
+
+The dataset ships three files. The transaction log alone cannot answer *is this
+amount large for this customer's credit limit?* — one of the stronger fraud
+signals available.
+
+```python
+from src.enrich import enrich, enriched_columns
+df = enrich(df, "data/sd254_users.csv", "data/sd254_cards.csv")
+```
+
+Adds `amount_vs_limit`, `card_age_days`, `has_chip`, `fico`, `debt_to_income`,
+`age_at_txn` and others.
+
+### Two fields are traps
+
+**`Card on Dark Web` is excluded by default.** It looks like the best feature in
+the dataset. It is a present-day status flag with no timestamp, and a card is
+listed on the dark web *because* it was compromised — frequently recorded after
+the fraud it would be used to predict. Including it buys an excellent offline
+score and a model that cannot work in production.
+
+**`Current Age` is excluded too.** It is the person's age today, not at
+transaction time; in a dataset spanning years that is a quiet time leak.
+`Birth Year` is used instead and age is computed per transaction.
+
+`include_unsafe=True` puts them back. Running that ablation is worth doing once —
+watching the dark-web flag inflate PR-AUC is the clearest illustration of what
+leakage looks like from the inside.
+
 ## Explanations
 
 ```bash
