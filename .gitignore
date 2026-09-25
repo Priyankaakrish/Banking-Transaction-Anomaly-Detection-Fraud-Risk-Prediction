@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# The Kaggle dataset is licensed — download it yourself, do not commit it
+data/*.csv
+!data/.gitkeep
+
+# Build output, regenerate with `python -m src.train`
+artifacts/*.joblib
+reports/*
+!reports/.gitkeep
+
+.DS_Store
+mlruns/
