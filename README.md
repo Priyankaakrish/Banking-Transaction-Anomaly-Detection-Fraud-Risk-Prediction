@@ -274,7 +274,3 @@ fraud caught before settlement often never becomes one.
 
 ---
 
-## Data
-
-The dataset is not redistributed here — download it from Kaggle under its
-own licence.
